@@ -4,19 +4,15 @@ config :token_manager,
   ecto_repos: [TokenManager.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-config :phoenix_live_view,
-  enable_expensive_runtime_checks: true
-
 # Configure the endpoint
 config :token_manager, TokenManagerWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: TokenManagerWeb.ErrorHTML, json: TokenManagerWeb.ErrorJSON],
+    formats: [json: TokenManagerWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: TokenManager.PubSub,
-  live_view: [signing_salt: "RBA5EK9q"]
+  pubsub_server: TokenManager.PubSub
 
 # Configure Elixir's Logger
 config :logger, :default_formatter,

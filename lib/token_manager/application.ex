@@ -9,7 +9,6 @@ defmodule TokenManager.Application do
       TokenManagerWeb.Telemetry,
       TokenManager.Repo,
       {DNSCluster, query: Application.get_env(:token_manager, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: TokenManager.PubSub},
       TokenManagerWeb.Endpoint
     ]
 
