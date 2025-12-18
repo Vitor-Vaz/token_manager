@@ -8,7 +8,6 @@ defmodule TokenManager.Application do
     children = [
       TokenManagerWeb.Telemetry,
       TokenManager.Repo,
-      {DNSCluster, query: Application.get_env(:token_manager, :dns_cluster_query) || :ignore},
       TokenManagerWeb.Endpoint
     ]
 
