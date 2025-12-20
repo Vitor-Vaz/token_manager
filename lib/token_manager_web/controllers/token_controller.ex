@@ -1,5 +1,5 @@
 defmodule TokenManagerWeb.TokenController do
-  use Phoenix.Controller
+  use Phoenix.Controller, formats: [:json]
 
   alias TokenManager.Commands.AssignToken
 
