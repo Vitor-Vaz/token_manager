@@ -12,6 +12,15 @@ defmodule TokenManager.Schemas.Token do
 
   @status_values ["available", "active"]
 
+  @type t :: %__MODULE__{
+          id: Ecto.UUID.t(),
+          status: String.t(),
+          expires_at: DateTime.t() | nil,
+          user_id: Ecto.UUID.t() | nil,
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
+        }
+
   schema "tokens" do
     field :status, :string, default: "available"
     field :expires_at, :utc_datetime
