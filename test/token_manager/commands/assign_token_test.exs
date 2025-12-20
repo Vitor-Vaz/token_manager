@@ -121,5 +121,34 @@ defmodule TokenManager.Commands.AssignTokenTest do
       assert Enum.sort(result_user_ids) == Enum.sort(audit_users)
       assert Enum.sort(result_token_ids) == Enum.sort(audit_tokens)
     end
+
+    test "returns error when user does not exist" do
+      non_existent_user_id = Ecto.UUID.generate()
+
+      result = AssignToken.assign_token(non_existent_user_id)
+
+      assert result == {:error, :user_not_found}
+    end
+
+    test "returns existing active token if user already has one" do
+      user_id = Ecto.UUID.generate()
+      Repo.insert(%User{id: user_id})
+
+      existing_token =
+        Repo.insert!(%Token{id: Ecto.UUID.generate(), status: "active", user_id: user_id})
+
+      result = AssignToken.assign_token(user_id)
+
+      assert result == %{token_id: existing_token.id, user_id: user_id}
+    end
+
+    test "returns error when token assignment fails" do
+      user_id = Ecto.UUID.generate()
+      Repo.insert(%User{id: user_id})
+
+      result = AssignToken.assign_token(user_id)
+
+      assert result == {:error, :failed_to_fetch_last_active_token}
+    end
   end
 end
