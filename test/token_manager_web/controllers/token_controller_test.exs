@@ -56,4 +56,89 @@ defmodule TokenManagerWeb.TokenControllerTest do
                |> json_response(500)
     end
   end
+
+  describe "list/2" do
+    test "lists all tokens without filters", %{conn: conn} do
+      for _ <- 1..3 do
+        Repo.insert!(%Token{status: "available"})
+      end
+
+      response =
+        conn
+        |> get("/api/tokens")
+        |> json_response(200)
+
+      assert length(response) == 3
+    end
+
+    test "lists tokens filtered by status", %{conn: conn} do
+      Repo.insert!(%Token{status: "available"})
+      Repo.insert!(%Token{status: "active", user_id: Ecto.UUID.generate()})
+
+      available_response =
+        conn
+        |> get("/api/tokens", %{"status" => "available"})
+        |> json_response(200)
+
+      active_response =
+        conn
+        |> get("/api/tokens", %{"status" => "active"})
+        |> json_response(200)
+
+      assert length(available_response) == 1
+      assert Enum.all?(available_response, fn t -> t["status"] == "available" end)
+
+      assert length(active_response) == 1
+      assert Enum.all?(active_response, fn t -> t["status"] == "active" end)
+    end
+
+    test "lists tokens filtered by user_id", %{conn: conn} do
+      user_id = Ecto.UUID.generate()
+      Repo.insert!(%Token{status: "active", user_id: user_id})
+      Repo.insert!(%Token{status: "available"})
+
+      response =
+        conn
+        |> get("/api/tokens", %{"user_id" => user_id})
+        |> json_response(200)
+
+      assert length(response) == 1
+      assert Enum.all?(response, fn t -> t["user_id"] == user_id end)
+    end
+
+    test "lists tokens filtered by expires_before", %{conn: conn} do
+      now = DateTime.utc_now()
+
+      past_time = now |> DateTime.add(30, :second) |> DateTime.truncate(:second)
+      expires_before_time = now |> DateTime.add(60, :second) |> DateTime.truncate(:second)
+      future_time = now |> DateTime.add(120, :second) |> DateTime.truncate(:second)
+
+      Repo.insert!(%Token{status: "active", expires_at: nil})
+      Repo.insert!(%Token{status: "active", expires_at: past_time})
+      Repo.insert!(%Token{status: "active", expires_at: future_time})
+
+      response =
+        conn
+        |> get("/api/tokens", %{"expires_before" => DateTime.to_iso8601(expires_before_time)})
+        |> json_response(200)
+
+      assert length(response) == 1
+
+      assert Enum.all?(response, fn t ->
+               {:ok, expires_at, _} = DateTime.from_iso8601(t["expires_at"])
+               DateTime.compare(expires_at, expires_before_time) == :lt
+             end)
+    end
+
+    test "list nothing when no tokens match filters", %{conn: conn} do
+      user_id = Ecto.UUID.generate()
+
+      response =
+        conn
+        |> get("/api/tokens", %{"status" => "active", "user_id" => user_id})
+        |> json_response(200)
+
+      assert length(response) == 0
+    end
+  end
 end
