@@ -6,6 +6,14 @@ defmodule TokenManager.Schemas.TokenAudits do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{
+          id: Ecto.UUID.t(),
+          token_id: Ecto.UUID.t(),
+          user_id: Ecto.UUID.t(),
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t()
+        }
+
   @primary_key {:id, Ecto.UUID, autogenerate: true}
 
   @required_fields [:token_id, :user_id]
