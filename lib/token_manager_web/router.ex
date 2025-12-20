@@ -6,7 +6,9 @@ defmodule TokenManagerWeb.Router do
   end
 
   # Define your API routes here
-  # scope "/api", TokenManagerWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", TokenManagerWeb do
+    pipe_through :api
+
+    post "/assign_token/:user_id", TokenController, :assign_token
+  end
 end
