@@ -138,7 +138,7 @@ defmodule TokenManagerWeb.TokenControllerTest do
         |> get("/api/tokens", %{"status" => "active", "user_id" => user_id})
         |> json_response(200)
 
-      assert length(response) == 0
+      assert Enum.empty?(response)
     end
   end
 end
