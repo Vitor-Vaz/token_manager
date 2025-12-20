@@ -11,8 +11,8 @@ defmodule TokenManager.Commands.AssignToken do
   alias TokenManager.Schemas.User
 
   @doc """
-  Assigns an available token to a user by updating the token's status to "assigned",
-  setting the user_id, and defining an expiration time 1 hour from now.
+  Assigns an available token to a user by updating the token's status to "active",
+  setting the user_id, and defining an expiration time 2 minutes from the current time.
 
   ## Parameters
     - user_id: The UUID of the user to whom the token will be assigned.
