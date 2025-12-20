@@ -44,7 +44,7 @@ defmodule TokenManager.Commands.AssignToken do
     end
   end
 
-  defp fetch_assignable_token() do
+  defp fetch_assignable_token do
     from(t in Token, where: t.status == "available", limit: 1)
     |> Repo.one()
     |> case do
@@ -58,7 +58,7 @@ defmodule TokenManager.Commands.AssignToken do
     |> Repo.one()
   end
 
-  defp fetch_last_active_token() do
+  defp fetch_last_active_token do
     from(t in Token, where: t.status == "active", limit: 1, order_by: [asc: t.expires_at])
     |> Repo.one()
     |> case do

@@ -3,8 +3,8 @@ defmodule TokenManager.Commands.AssignTokenTest do
 
   alias TokenManager.Commands.AssignToken
   alias TokenManager.Schemas.Token
-  alias TokenManager.Schemas.User
   alias TokenManager.Schemas.TokenAudits
+  alias TokenManager.Schemas.User
 
   describe "assign_token/1" do
     test "successfully assigns an available token to a user" do

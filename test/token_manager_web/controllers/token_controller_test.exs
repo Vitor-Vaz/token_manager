@@ -2,8 +2,8 @@ defmodule TokenManagerWeb.TokenControllerTest do
   use TokenManagerWeb.ConnCase
 
   alias TokenManager.Repo
-  alias TokenManager.Schemas.User
   alias TokenManager.Schemas.Token
+  alias TokenManager.Schemas.User
 
   describe "assign_token/2" do
     test "successfully assigns a token to a user", %{conn: conn} do
