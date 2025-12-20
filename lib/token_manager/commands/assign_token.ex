@@ -1,4 +1,8 @@
 defmodule TokenManager.Commands.AssignToken do
+  @moduledoc """
+  Module responsible for assigning tokens to users.
+  """
+
   import Ecto.Query, warn: false
 
   alias TokenManager.Repo
@@ -20,42 +24,49 @@ defmodule TokenManager.Commands.AssignToken do
   @spec assign_token(Ecto.UUID.t()) :: map() | {:error, atom()}
   def assign_token(user_id) do
     with %User{} <- Repo.get(User, user_id),
-         nil <- get_user_active_token(user_id),
-         %Token{} = token <- get_active_tokens(user_id),
+         nil <- fetch_user_active_token(user_id),
+         %Token{} = token <- fetch_assignable_token(),
          {:ok, _} <- do_activation_token(token, user_id),
          :ok <- register_token_audit(token.id, user_id) do
       %{token_id: token.id, user_id: user_id}
     else
-      %Token{} = token -> %{token_id: token.id, user_id: user_id}
-      nil -> {:error, :user_not_found}
-      {:error, reason} -> {:error, reason}
-      _ -> {:error, :unexpected_error}
+      %Token{} = token ->
+        %{token_id: token.id, user_id: user_id}
+
+      nil ->
+        {:error, :user_not_found}
+
+      {:error, reason} ->
+        {:error, reason}
+
+      _ ->
+        {:error, :unexpected_error}
     end
   end
 
-  defp get_active_tokens(user_id) do
-    from(t in Token, where: t.status == "available")
+  defp fetch_assignable_token() do
+    from(t in Token, where: t.status == "available", limit: 1)
     |> Repo.one()
     |> case do
-      nil -> force_assign_token(user_id)
+      nil -> fetch_last_active_token()
       token -> token
     end
   end
 
-  defp get_user_active_token(user_id) do
+  defp fetch_user_active_token(user_id) do
     from(t in Token, where: t.status == "active" and t.user_id == ^user_id)
     |> Repo.one()
   end
 
-  defp force_assign_token(user_id) do
+  defp fetch_last_active_token() do
     from(t in Token, where: t.status == "active", limit: 1, order_by: [asc: t.expires_at])
     |> Repo.one()
     |> case do
-      token ->
-        do_activation_token(token, user_id)
+      %Token{} = token ->
+        token
 
       _ ->
-        {:error, :failed_to_force_assign_token}
+        {:error, :failed_to_fetch_last_active_token}
     end
   end
 
