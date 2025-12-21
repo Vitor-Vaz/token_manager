@@ -2,8 +2,8 @@ defmodule TokenManagerWeb.TokenController do
   use Phoenix.Controller, formats: [:json]
 
   alias TokenManager.Commands.AssignToken
-  alias TokenManager.Commands.ListTokens
   alias TokenManager.Commands.FetchTokenInfo
+  alias TokenManager.Commands.ListTokens
 
   @spec assign_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def assign_token(conn, %{"user_id" => user_id}) do
