@@ -23,7 +23,7 @@ defmodule TokenManagerWeb.TokenController do
     end
   end
 
-  @spec list(Plug.Conn.t(), nil | maybe_improper_list() | map()) :: Plug.Conn.t()
+  @spec list(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def list(conn, params) do
     filter = %ListTokens{
       status: params["status"] || nil,
