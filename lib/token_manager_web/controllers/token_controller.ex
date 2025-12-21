@@ -2,6 +2,7 @@ defmodule TokenManagerWeb.TokenController do
   use Phoenix.Controller, formats: [:json]
 
   alias TokenManager.Commands.AssignToken
+  alias TokenManager.Commands.FetchTokenInfo
   alias TokenManager.Commands.ListTokens
 
   @spec assign_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -22,6 +23,7 @@ defmodule TokenManagerWeb.TokenController do
     end
   end
 
+  @spec list(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def list(conn, params) do
     filter = %ListTokens{
       status: params["status"] || nil,
@@ -32,6 +34,24 @@ defmodule TokenManagerWeb.TokenController do
     tokens = ListTokens.list(filter)
 
     render(conn, :index, tokens: tokens)
+  end
+
+  @spec fetch_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def fetch_token(conn, %{"token_id" => token_id}) do
+    case FetchTokenInfo.fetch_token_info(token_id) do
+      {:error, :token_not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "token_not_found"})
+
+      {:error, _} ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{error: "internal_server_error"})
+
+      token_info ->
+        render(conn, :token_info, token_info)
+    end
   end
 
   defp parse_datetime(nil), do: nil

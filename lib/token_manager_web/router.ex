@@ -11,5 +11,6 @@ defmodule TokenManagerWeb.Router do
 
     post "/assign_token/:user_id", TokenController, :assign_token
     get "/tokens", TokenController, :list
+    get "/token/:token_id", TokenController, :fetch_token
   end
 end
