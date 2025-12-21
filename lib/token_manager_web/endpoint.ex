@@ -1,4 +1,7 @@
 defmodule TokenManagerWeb.Endpoint do
+  @moduledoc """
+  The endpoint for the TokenManagerWeb application.
+  """
   use Phoenix.Endpoint, otp_app: :token_manager
 
   # Code reloading can be explicitly enabled under the
