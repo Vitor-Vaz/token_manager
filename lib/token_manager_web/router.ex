@@ -13,5 +13,6 @@ defmodule TokenManagerWeb.Router do
     get "/tokens", TokenController, :list
     get "/token/:token_id", TokenController, :fetch_token
     get "/token_history/:token_id", TokenController, :token_history
+    put "/clear_all_tokens", TokenController, :clear_all_tokens
   end
 end

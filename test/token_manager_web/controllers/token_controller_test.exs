@@ -1,12 +1,14 @@
 defmodule TokenManagerWeb.TokenControllerTest do
   use TokenManagerWeb.ConnCase
 
+  import Ecto.Query
+
   alias TokenManager.Commands.AssignToken
   alias TokenManager.Repo
   alias TokenManager.Schemas.Token
   alias TokenManager.Schemas.User
 
-  describe "assign_token/2" do
+  describe "/assign_token/:user_id" do
     test "successfully assigns a token to a user", %{conn: conn} do
       user_id = Ecto.UUID.generate()
 
@@ -58,7 +60,7 @@ defmodule TokenManagerWeb.TokenControllerTest do
     end
   end
 
-  describe "list/2" do
+  describe "/tokens" do
     test "lists all tokens without filters", %{conn: conn} do
       for _ <- 1..3 do
         Repo.insert!(%Token{status: "available"})
@@ -143,7 +145,7 @@ defmodule TokenManagerWeb.TokenControllerTest do
     end
   end
 
-  describe "fetch_token/2" do
+  describe "/token/:token_id" do
     test "successfully fetches token info", %{conn: conn} do
       token_id = Ecto.UUID.generate()
       Repo.insert!(%Token{id: token_id, status: "available"})
@@ -194,7 +196,7 @@ defmodule TokenManagerWeb.TokenControllerTest do
     end
   end
 
-  describe "token_history/2" do
+  describe "/token_history/:token_id" do
     test "successfully fetches token history", %{conn: conn} do
       token_id = Ecto.UUID.generate()
       user_id = Ecto.UUID.generate()
@@ -240,6 +242,40 @@ defmodule TokenManagerWeb.TokenControllerTest do
         |> json_response(200)
 
       assert length(response) == 10
+    end
+  end
+
+  describe "/clear_all_tokens" do
+    test "successfully clears all tokens", %{conn: conn} do
+      Repo.insert!(%Token{status: "available"})
+      Repo.insert!(%Token{status: "active", user_id: Ecto.UUID.generate()})
+
+      response =
+        conn
+        |> put("/api/clear_all_tokens")
+        |> json_response(201)
+
+      assert response == %{}
+
+      tokens = Repo.all(from t in Token, where: t.status == "available")
+
+      assert length(tokens) == 2
+    end
+
+    test "should handle when there are no tokens to clear", %{conn: conn} do
+      Repo.insert!(%Token{status: "available"})
+      Repo.insert!(%Token{status: "available"})
+
+      response =
+        conn
+        |> put("/api/clear_all_tokens")
+        |> json_response(201)
+
+      assert response == %{}
+
+      tokens = Repo.all(from t in Token, where: t.status == "active")
+
+      assert Enum.empty?(tokens)
     end
   end
 end
