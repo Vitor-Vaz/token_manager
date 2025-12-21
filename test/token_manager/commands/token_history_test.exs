@@ -1,9 +1,9 @@
 defmodule TokenManager.Commands.TokenHistoryTest do
   use TokenManager.DataCase, async: true
 
+  alias TokenManager.Commands.TokenHistory
   alias TokenManager.Repo
   alias TokenManager.Schemas.TokenAudits
-  alias TokenManager.Commands.TokenHistory
 
   describe "token_history/1" do
     test "fetches the history of users for a specific token" do
