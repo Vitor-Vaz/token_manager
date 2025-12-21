@@ -1,6 +1,7 @@
 defmodule TokenManagerWeb.TokenControllerTest do
   use TokenManagerWeb.ConnCase
 
+  alias TokenManager.Commands.AssignToken
   alias TokenManager.Repo
   alias TokenManager.Schemas.Token
   alias TokenManager.Schemas.User
@@ -139,6 +140,57 @@ defmodule TokenManagerWeb.TokenControllerTest do
         |> json_response(200)
 
       assert Enum.empty?(response)
+    end
+  end
+
+  describe "fetch_token/2" do
+    test "successfully fetches token info", %{conn: conn} do
+      token_id = Ecto.UUID.generate()
+      Repo.insert!(%Token{id: token_id, status: "available"})
+
+      response =
+        conn
+        |> get("/api/token/#{token_id}")
+        |> json_response(200)
+
+      assert %{
+               "id" => ^token_id,
+               "status" => "available",
+               "expires_at" => nil,
+               "user_id" => nil,
+               "users_history" => []
+             } = response
+    end
+
+    test "returns error when token not found", %{conn: conn} do
+      non_existent_token_id = Ecto.UUID.generate()
+
+      assert %{"error" => "token_not_found"} ==
+               conn
+               |> get("/api/token/#{non_existent_token_id}")
+               |> json_response(404)
+    end
+
+    test "successfully fetches token info with audits", %{conn: conn} do
+      token_id = Ecto.UUID.generate()
+      user_id = Ecto.UUID.generate()
+
+      Repo.insert!(%User{id: user_id})
+      Repo.insert!(%Token{id: token_id, status: "available"})
+
+      AssignToken.assign_token(user_id)
+
+      response =
+        conn
+        |> get("/api/token/#{token_id}")
+        |> json_response(200)
+
+      assert %{
+               "id" => ^token_id,
+               "status" => "active",
+               "user_id" => ^user_id,
+               "users_history" => [%{"user_id" => ^user_id}]
+             } = response
     end
   end
 end

@@ -19,8 +19,7 @@ defmodule TokenManager.Commands.FetchTokenInfoTest do
       token_info = FetchTokenInfo.fetch_token_info(token_id)
 
       assert %{
-               token: %Token{id: ^token_id},
-               user: %User{id: ^user_id},
+               token: %Token{id: ^token_id, user_id: ^user_id},
                audits: audits
              } = token_info
 
@@ -42,8 +41,7 @@ defmodule TokenManager.Commands.FetchTokenInfoTest do
       token_info = FetchTokenInfo.fetch_token_info(token_id)
 
       assert %{
-               token: %Token{id: ^token_id},
-               user: nil,
+               token: %Token{id: ^token_id, user_id: nil},
                audits: []
              } = token_info
     end
@@ -68,8 +66,7 @@ defmodule TokenManager.Commands.FetchTokenInfoTest do
       token_info = FetchTokenInfo.fetch_token_info(token_id)
 
       assert %{
-               token: %Token{id: ^token_id},
-               user: nil,
+               token: %Token{id: ^token_id, user_id: nil},
                audits: audits
              } = token_info
 

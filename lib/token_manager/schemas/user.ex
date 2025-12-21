@@ -6,12 +6,6 @@ defmodule TokenManager.Schemas.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
-          inserted_at: DateTime.t(),
-          updated_at: DateTime.t()
-        }
-
   @primary_key {:id, Ecto.UUID, autogenerate: true}
 
   schema "users" do

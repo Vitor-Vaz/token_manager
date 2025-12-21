@@ -8,7 +8,6 @@ defmodule TokenManager.Commands.FetchTokenInfo do
   alias TokenManager.Repo
   alias TokenManager.Schemas.Token
   alias TokenManager.Schemas.TokenAudits
-  alias TokenManager.Schemas.User
 
   @doc """
     Fetches detailed information about a specific token, including its associated user (if active)
@@ -22,15 +21,13 @@ defmodule TokenManager.Commands.FetchTokenInfo do
       - An error tuple {:error, reason} if the token is not found or another error occurs.
   """
   @spec fetch_token_info(any()) ::
-          %{audits: list(TokenAudits.t()), token: Token.t(), user: User.t() | nil}
+          %{audits: list(TokenAudits.t()), token: Token.t()}
           | {:error, atom()}
   def fetch_token_info(token_id) do
     with {:token, %Token{} = token} <- {:token, Repo.get(Token, token_id)},
-         user <- fetch_token_user(token),
          audits <- fetch_token_audits(token_id) do
       %{
         token: token,
-        user: user,
         audits: audits
       }
     else
@@ -41,12 +38,6 @@ defmodule TokenManager.Commands.FetchTokenInfo do
         {:error, :unexpected_error}
     end
   end
-
-  defp fetch_token_user(%Token{user_id: user_id, status: "active"}) do
-    Repo.get(User, user_id)
-  end
-
-  defp fetch_token_user(_), do: nil
 
   defp fetch_token_audits(token_id) do
     Repo.all(
