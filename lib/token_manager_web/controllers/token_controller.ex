@@ -4,6 +4,7 @@ defmodule TokenManagerWeb.TokenController do
   alias TokenManager.Commands.AssignToken
   alias TokenManager.Commands.FetchTokenInfo
   alias TokenManager.Commands.ListTokens
+  alias TokenManager.Commands.TokenHistory
 
   @spec assign_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def assign_token(conn, %{"user_id" => user_id}) do
@@ -52,6 +53,11 @@ defmodule TokenManagerWeb.TokenController do
       token_info ->
         render(conn, :token_info, token_info)
     end
+  end
+
+  def token_history(conn, %{"token_id" => token_id}) do
+    history = TokenHistory.token_history(token_id)
+    render(conn, :token_history, history: history)
   end
 
   defp parse_datetime(nil), do: nil

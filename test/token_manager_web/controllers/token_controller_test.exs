@@ -193,4 +193,53 @@ defmodule TokenManagerWeb.TokenControllerTest do
              } = response
     end
   end
+
+  describe "token_history/2" do
+    test "successfully fetches token history", %{conn: conn} do
+      token_id = Ecto.UUID.generate()
+      user_id = Ecto.UUID.generate()
+
+      Repo.insert!(%User{id: user_id})
+      Repo.insert!(%Token{id: token_id, status: "available"})
+
+      AssignToken.assign_token(user_id)
+
+      response =
+        conn
+        |> get("/api/token_history/#{token_id}")
+        |> json_response(200)
+
+      assert [%{"user_id" => ^user_id}] = response
+    end
+
+    test "returns an empty list when no history exists", %{conn: conn} do
+      token_id = Ecto.UUID.generate()
+      Repo.insert!(%Token{id: token_id, status: "available"})
+
+      response =
+        conn
+        |> get("/api/token_history/#{token_id}")
+        |> json_response(200)
+
+      assert response == []
+    end
+
+    test "returns at most 10 history records", %{conn: conn} do
+      token_id = Ecto.UUID.generate()
+      Repo.insert!(%Token{id: token_id, status: "available"})
+
+      for _ <- 1..15 do
+        user_id = Ecto.UUID.generate()
+        Repo.insert!(%User{id: user_id})
+        AssignToken.assign_token(user_id)
+      end
+
+      response =
+        conn
+        |> get("/api/token_history/#{token_id}")
+        |> json_response(200)
+
+      assert length(response) == 10
+    end
+  end
 end

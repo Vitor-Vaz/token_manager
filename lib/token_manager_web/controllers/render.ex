@@ -23,6 +23,18 @@ defmodule TokenManagerWeb.TokenJSON do
     })
   end
 
+  @doc """
+  Renders the token history.
+  """
+  def token_history(%{history: history}) do
+    Enum.map(history, fn audit ->
+      %{
+        user_id: audit.user_id,
+        created_at: audit.inserted_at
+      }
+    end)
+  end
+
   defp data(%Token{} = token) do
     %{
       id: token.id,
