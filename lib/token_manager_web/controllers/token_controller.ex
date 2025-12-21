@@ -2,6 +2,7 @@ defmodule TokenManagerWeb.TokenController do
   use Phoenix.Controller, formats: [:json]
 
   alias TokenManager.Commands.AssignToken
+  alias TokenManager.Commands.ClearAllTokens
   alias TokenManager.Commands.FetchTokenInfo
   alias TokenManager.Commands.ListTokens
   alias TokenManager.Commands.TokenHistory
@@ -55,9 +56,25 @@ defmodule TokenManagerWeb.TokenController do
     end
   end
 
+  @spec token_history(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def token_history(conn, %{"token_id" => token_id}) do
     history = TokenHistory.token_history(token_id)
     render(conn, :token_history, history: history)
+  end
+
+  @spec clear_all_tokens(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def clear_all_tokens(conn, _params) do
+    case ClearAllTokens.clear_all() do
+      :ok ->
+        conn
+        |> put_status(:created)
+        |> json(%{})
+
+      :error ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{error: "internal_server_error"})
+    end
   end
 
   defp parse_datetime(nil), do: nil
