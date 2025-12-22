@@ -3,7 +3,7 @@
 # # Script de assign token para a API de tokens
 # # Uso: mix run priv/scripts/assignes_test.exs [quantidade_minima]
 
-defmodule StressTest do
+defmodule AssignesTest do
   @base_url "http://localhost:4000/api"
 
   def run(quantity \\ 10) do
@@ -178,4 +178,4 @@ quantity =
     str -> String.to_integer(str)
   end
 
-StressTest.run(quantity)
+AssignesTest.run(quantity)

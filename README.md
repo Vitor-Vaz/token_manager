@@ -150,7 +150,7 @@ PUT /api/clear_all_tokens
 
 #### Listar Usuários
 ```http
-GET /api/users/:quantity
+GET /api/users/:limit
 ```
 
 ---
@@ -181,7 +181,7 @@ mix credo --strict
 
 ### Scripts de Test
 
-Execute o script de stress test para validar performance:
+Execute o script de assignes test para validar performance:
 
 ```bash
 # 10 usuários (padrão)
