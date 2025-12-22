@@ -1,8 +1,8 @@
 defmodule TokenManagerWeb.UserControllerTest do
   use TokenManagerWeb.ConnCase
 
-  alias TokenManager.Schemas.User
   alias TokenManager.Repo
+  alias TokenManager.Schemas.User
 
   describe "GET /api/users/:quantity" do
     test "returns the specified number of users", %{conn: conn} do

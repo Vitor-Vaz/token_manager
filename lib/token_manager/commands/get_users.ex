@@ -1,4 +1,8 @@
 defmodule TokenManager.Commands.GetUsers do
+  @moduledoc """
+    Command module to get users from the system.
+  """
+
   import Ecto.Query, warn: false
 
   alias TokenManager.Repo
