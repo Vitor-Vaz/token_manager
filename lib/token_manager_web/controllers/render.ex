@@ -1,6 +1,6 @@
-defmodule TokenManagerWeb.TokenJSON do
+defmodule TokenManagerWeb.RenderJSON do
   @moduledoc """
-  JSON rendering for Token resources.
+  JSON rendering all related to tokens.
   """
 
   alias TokenManager.Schemas.Token
@@ -31,6 +31,16 @@ defmodule TokenManagerWeb.TokenJSON do
       %{
         user_id: audit.user_id,
         created_at: audit.inserted_at
+      }
+    end)
+  end
+
+  def users(%{users: users}) do
+    Enum.map(users, fn user ->
+      %{
+        id: user.id,
+        inserted_at: user.inserted_at,
+        updated_at: user.updated_at
       }
     end)
   end
