@@ -1,9 +1,9 @@
 defmodule TokenManager.Commands.ClearExpiredTokensTest do
   use TokenManager.DataCase, async: true
 
+  alias TokenManager.Commands.ClearExpiredTokens
   alias TokenManager.Repo
   alias TokenManager.Schemas.Token
-  alias TokenManager.Commands.ClearExpiredTokens
 
   describe "execute" do
     test "releases tokens that have expired" do
