@@ -23,32 +23,38 @@ defmodule TokenManager.Commands.AssignToken do
   """
   @spec assign_token(Ecto.UUID.t()) :: map() | {:error, atom()}
   def assign_token(user_id) do
-    with %User{} <- Repo.get(User, user_id),
-         nil <- fetch_user_active_token(user_id),
-         %Token{} = token <- fetch_assignable_token(),
-         {:ok, _} <- do_activation_token(token, user_id),
-         :ok <- register_token_audit(token.id, user_id) do
-      %{token_id: token.id, user_id: user_id}
-    else
-      %Token{} = token ->
+    Repo.transaction(fn ->
+      with %User{} <- Repo.get(User, user_id),
+           nil <- fetch_user_active_token(user_id),
+           %Token{} = token <- fetch_assignable_token_with_lock(),
+           {:ok, _} <- do_activation_token(token, user_id),
+           :ok <- register_token_audit(token.id, user_id) do
         %{token_id: token.id, user_id: user_id}
+      else
+        %Token{} = token ->
+          %{token_id: token.id, user_id: user_id}
 
-      nil ->
-        {:error, :user_not_found}
+        nil ->
+          Repo.rollback(:user_not_found)
 
-      {:error, reason} ->
-        {:error, reason}
+        {:error, reason} ->
+          Repo.rollback(reason)
 
-      _ ->
-        {:error, :unexpected_error}
+        _ ->
+          Repo.rollback(:unexpected_error)
+      end
+    end)
+    |> case do
+      {:ok, result} -> result
+      {:error, reason} -> {:error, reason}
     end
   end
 
-  defp fetch_assignable_token do
-    from(t in Token, where: t.status == "available", limit: 1)
+  defp fetch_assignable_token_with_lock do
+    from(t in Token, where: t.status == "available", limit: 1, lock: "FOR UPDATE")
     |> Repo.one()
     |> case do
-      nil -> fetch_last_active_token()
+      nil -> fetch_last_active_token_with_lock()
       token -> token
     end
   end
@@ -58,8 +64,13 @@ defmodule TokenManager.Commands.AssignToken do
     |> Repo.one()
   end
 
-  defp fetch_last_active_token do
-    from(t in Token, where: t.status == "active", limit: 1, order_by: [asc: t.expires_at])
+  defp fetch_last_active_token_with_lock do
+    from(t in Token,
+      where: t.status == "active",
+      limit: 1,
+      order_by: [asc: t.expires_at],
+      lock: "FOR UPDATE"
+    )
     |> Repo.one()
     |> case do
       %Token{} = token ->

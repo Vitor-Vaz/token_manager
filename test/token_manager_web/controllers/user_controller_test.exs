@@ -25,8 +25,6 @@ defmodule TokenManagerWeb.UserControllerTest do
         Repo.insert!(%User{})
       end
 
-      total_users = Repo.aggregate(User, :count)
-
       invalid_quantities = ["abc", "-5", "0"]
 
       for qty <- invalid_quantities do

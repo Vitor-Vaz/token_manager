@@ -33,7 +33,7 @@ tokens =
 IO.puts("✓ #{count} tokens criados com sucesso!")
 
 users =
-  Enum.map(1..10, fn _ ->
+  Enum.map(1..101, fn _ ->
     %{
       id: Ecto.UUID.generate(),
       inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
