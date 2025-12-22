@@ -6,6 +6,7 @@ defmodule TokenManagerWeb.TokenController do
   alias TokenManager.Commands.FetchTokenInfo
   alias TokenManager.Commands.ListTokens
   alias TokenManager.Commands.TokenHistory
+  alias TokenManagerWeb.RenderJSON
 
   @spec assign_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def assign_token(conn, %{"user_id" => user_id}) do
@@ -35,7 +36,9 @@ defmodule TokenManagerWeb.TokenController do
 
     tokens = ListTokens.list(filter)
 
-    render(conn, :index, tokens: tokens)
+    conn
+    |> put_view(RenderJSON)
+    |> render(:index, tokens: tokens)
   end
 
   @spec fetch_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
@@ -52,14 +55,19 @@ defmodule TokenManagerWeb.TokenController do
         |> json(%{error: "internal_server_error"})
 
       token_info ->
-        render(conn, :token_info, token_info)
+        conn
+        |> put_view(RenderJSON)
+        |> render(:token_info, token_info)
     end
   end
 
   @spec token_history(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def token_history(conn, %{"token_id" => token_id}) do
     history = TokenHistory.token_history(token_id)
-    render(conn, :token_history, history: history)
+
+    conn
+    |> put_view(RenderJSON)
+    |> render(:token_history, history: history)
   end
 
   @spec clear_all_tokens(Plug.Conn.t(), map()) :: Plug.Conn.t()
