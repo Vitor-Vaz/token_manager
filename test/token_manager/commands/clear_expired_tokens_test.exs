@@ -1,11 +1,11 @@
-defmodule TokenManager.Workers.ReleaseExpiredTokensTest do
+defmodule TokenManager.Commands.ClearExpiredTokensTest do
   use TokenManager.DataCase, async: true
 
+  alias TokenManager.Commands.ClearExpiredTokens
   alias TokenManager.Repo
   alias TokenManager.Schemas.Token
-  alias TokenManager.Workers.ReleaseExpiredTokens
 
-  describe "perform/1" do
+  describe "execute" do
     test "releases tokens that have expired" do
       now = DateTime.utc_now()
       past = DateTime.add(now, -60, :second) |> DateTime.truncate(:second)
@@ -28,7 +28,7 @@ defmodule TokenManager.Workers.ReleaseExpiredTokensTest do
 
       available_token = Repo.insert!(%Token{status: "available"})
 
-      assert :ok = ReleaseExpiredTokens.perform(%Oban.Job{args: %{}})
+      assert :ok = ClearExpiredTokens.execute()
 
       expired_token = Repo.reload!(expired_token)
       assert expired_token.status == "available"
@@ -55,7 +55,7 @@ defmodule TokenManager.Workers.ReleaseExpiredTokensTest do
         })
       end
 
-      assert :ok = ReleaseExpiredTokens.perform(%Oban.Job{args: %{}})
+      assert :ok = ClearExpiredTokens.execute()
 
       available_count = Repo.aggregate(Token, :count, :id, where: [status: "available"])
       assert available_count == 5
@@ -75,14 +75,14 @@ defmodule TokenManager.Workers.ReleaseExpiredTokensTest do
         expires_at: future
       })
 
-      assert :ok = ReleaseExpiredTokens.perform(%Oban.Job{args: %{}})
+      assert :ok = ClearExpiredTokens.execute()
 
       active_count = Repo.aggregate(Token, :count, :id, where: [status: "active"])
       assert active_count == 1
     end
 
     test "returns :ok when no tokens exist" do
-      assert :ok = ReleaseExpiredTokens.perform(%Oban.Job{args: %{}})
+      assert :ok = ClearExpiredTokens.execute()
     end
   end
 end
