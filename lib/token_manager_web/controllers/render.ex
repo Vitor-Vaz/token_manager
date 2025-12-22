@@ -30,7 +30,7 @@ defmodule TokenManagerWeb.RenderJSON do
     Enum.map(history, fn audit ->
       %{
         user_id: audit.user_id,
-        created_at: audit.inserted_at
+        created_at: format_datetime(audit.inserted_at)
       }
     end)
   end
@@ -39,8 +39,8 @@ defmodule TokenManagerWeb.RenderJSON do
     Enum.map(users, fn user ->
       %{
         id: user.id,
-        inserted_at: user.inserted_at,
-        updated_at: user.updated_at
+        inserted_at: format_datetime(user.inserted_at),
+        updated_at: format_datetime(user.updated_at)
       }
     end)
   end
@@ -50,16 +50,30 @@ defmodule TokenManagerWeb.RenderJSON do
       id: token.id,
       status: token.status,
       user_id: token.user_id,
-      expires_at: token.expires_at,
-      inserted_at: token.inserted_at,
-      updated_at: token.updated_at
+      expires_at: format_datetime(token.expires_at),
+      inserted_at: format_datetime(token.inserted_at),
+      updated_at: format_datetime(token.updated_at)
     }
   end
 
   defp audit_data(audit) do
     %{
       user_id: audit.user_id,
-      created_at: audit.inserted_at
+      created_at: format_datetime(audit.inserted_at)
     }
   end
+
+  defp format_datetime(%DateTime{} = datetime) do
+    datetime
+    |> DateTime.add(-3, :hour)
+    |> Calendar.strftime("%d/%m/%Y %H:%M:%S")
+  end
+
+  defp format_datetime(%NaiveDateTime{} = naive_datetime) do
+    naive_datetime
+    |> DateTime.from_naive!("Etc/UTC")
+    |> format_datetime()
+  end
+
+  defp format_datetime(_), do: nil
 end

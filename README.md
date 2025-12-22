@@ -2,7 +2,7 @@
 
 Sistema de gerenciamento de tokens com controle de estados e histórico de auditoria.
 
-## 📋 Índice
+## Índice
 
 - [Como Rodar](#como-rodar)
 - [Como Funciona](#como-funciona)
@@ -11,7 +11,7 @@ Sistema de gerenciamento de tokens com controle de estados e histórico de audit
 
 ---
 
-## 🚀 Como Rodar
+## Como Rodar
 
 ### Pré-requisitos
 
@@ -62,11 +62,11 @@ mix phx.server
 
 ### Importar rotas no Insomnia
 
-Importe o arquivo `insomnia_export.json` no Insomnia para testar todas as rotas da API.
+Importe o arquivo `export_routes.json` no Insomnia para testar todas as rotas da API.
 
 ---
 
-## 🔧 Como Funciona
+## Como Funciona
 
 ### Visão Geral
 
@@ -108,16 +108,16 @@ Todas as operações são registradas na tabela `token_audits`:
 
 ### Funcionalidades
 
-- ✅ Atribuição automática de tokens disponíveis
-- ✅ Controle de expiração com data/hora
-- ✅ Liberação automática de tokens expirados (a cada 10s)
-- ✅ Limpeza manual de todos os tokens
-- ✅ Histórico de auditoria completo
-- ✅ Filtros avançados (status, user_id, expires_before)
-- ✅ Informações detalhadas de tokens
+- Atribuição automática de tokens disponíveis
+- Controle de expiração com data/hora
+- Liberação automática de tokens expirados (a cada 10s)
+- Limpeza manual de todos os tokens
+- Histórico de auditoria completo
+- Filtros avançados (status, user_id, expires_before)
+- Informações detalhadas de tokens
 
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Tokens
 
@@ -155,7 +155,7 @@ GET /api/users/:quantity
 
 ---
 
-## 🧪 Testes
+## Testes
 
 ### Rodar todos os testes
 ```bash
