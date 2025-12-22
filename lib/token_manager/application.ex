@@ -8,6 +8,7 @@ defmodule TokenManager.Application do
     children = [
       TokenManagerWeb.Telemetry,
       TokenManager.Repo,
+      {Oban, Application.fetch_env!(:token_manager, Oban)},
       TokenManagerWeb.Endpoint
     ]
 

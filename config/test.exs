@@ -13,6 +13,9 @@ config :token_manager, TokenManagerWeb.Endpoint,
   secret_key_base: "qyrPtY3nMziqFVqcP1SUNkYDQr3j5luVto/Ab6+LDIdTzDMoYQlkXbR6UiwQ7dcr",
   server: false
 
+# Disable Oban during tests
+config :token_manager, Oban, testing: :inline
+
 config :logger, level: :warning
 
 config :phoenix, :plug_init_mode, :runtime
