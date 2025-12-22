@@ -29,3 +29,14 @@ config :logger, :default_formatter,
 config :phoenix, :json_library, Jason
 
 import_config "#{config_env()}.exs"
+
+config :token_manager, Oban,
+  repo: TokenManager.Repo,
+  plugins: [
+    Oban.Plugins.Pruner,
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"*/10 * * * * *", TokenManager.Workers.ReleaseExpiredTokens}
+     ]}
+  ],
+  queues: [default: 10]
