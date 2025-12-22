@@ -39,6 +39,7 @@ defmodule TokenManager.MixProject do
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
+      {:oban, "~> 2.18"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
