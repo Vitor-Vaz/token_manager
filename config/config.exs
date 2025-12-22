@@ -4,12 +4,6 @@ config :token_manager,
   ecto_repos: [TokenManager.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-# Configure Oban
-config :token_manager, Oban,
-  repo: TokenManager.Repo,
-  plugins: [Oban.Plugins.Pruner],
-  queues: [default: 10]
-
 # Configure the endpoint
 config :token_manager, TokenManagerWeb.Endpoint,
   url: [host: "localhost"],
@@ -29,14 +23,3 @@ config :logger, :default_formatter,
 config :phoenix, :json_library, Jason
 
 import_config "#{config_env()}.exs"
-
-config :token_manager, Oban,
-  repo: TokenManager.Repo,
-  plugins: [
-    Oban.Plugins.Pruner,
-    {Oban.Plugins.Cron,
-     crontab: [
-       {"*/10 * * * * *", TokenManager.Workers.ReleaseExpiredTokens}
-     ]}
-  ],
-  queues: [default: 10]

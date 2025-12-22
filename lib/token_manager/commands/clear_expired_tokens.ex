@@ -1,10 +1,7 @@
-defmodule TokenManager.Workers.ReleaseExpiredTokens do
+defmodule TokenManager.Commands.ClearExpiredTokens do
   @moduledoc """
-  Worker module to release expired tokens back to available status.
-  Runs periodically via Oban Cron Job to check for tokens past their expiration time.
+    Command module to clear expired tokens by releasing them back to available status.
   """
-
-  use Oban.Worker, queue: :default
 
   import Ecto.Query
 
@@ -13,8 +10,8 @@ defmodule TokenManager.Workers.ReleaseExpiredTokens do
 
   require Logger
 
-  @impl Oban.Worker
-  def perform(%Oban.Job{}) do
+  @spec execute() :: :ok
+  def execute do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
     from(t in Token,
