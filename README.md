@@ -185,11 +185,11 @@ Execute o script de stress test para validar performance:
 
 ```bash
 # 10 usuários (padrão)
-mix run priv/scripts/stress_test.exs
+mix run priv/scripts/assignes_test.exs
 
 # 100 usuários
-mix run priv/scripts/stress_test.exs 100
+mix run priv/scripts/assignes_test.exs 100
 
 # 1000 usuários
-mix run priv/scripts/stress_test.exs 1000
+mix run priv/scripts/assignes_test.exs 1000
 ```
