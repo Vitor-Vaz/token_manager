@@ -5,9 +5,9 @@ defmodule TokenManagerWeb.UserController do
   alias TokenManagerWeb.RenderJSON
 
   @spec get_users(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def get_users(conn, %{"quantity" => quantity_str}) do
+  def get_users(conn, %{"limit" => limit_str}) do
     users =
-      quantity_str
+      limit_str
       |> Integer.parse()
       |> case do
         {num, _} when num > 0 -> num

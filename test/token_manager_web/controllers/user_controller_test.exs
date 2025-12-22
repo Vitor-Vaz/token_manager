@@ -4,23 +4,23 @@ defmodule TokenManagerWeb.UserControllerTest do
   alias TokenManager.Repo
   alias TokenManager.Schemas.User
 
-  describe "GET /api/users/:quantity" do
+  describe "GET /api/users/:limit" do
     test "returns the specified number of users", %{conn: conn} do
       for _ <- 1..10 do
         Repo.insert!(%User{})
       end
 
-      quantity = 5
+      limit = 5
 
       response =
         conn
-        |> get("/api/users/#{quantity}")
+        |> get("/api/users/#{limit}")
         |> json_response(200)
 
-      assert length(response) == quantity
+      assert length(response) == limit
     end
 
-    test "returns 10 users when quantity is not a positive integer", %{conn: conn} do
+    test "returns 10 users when limit is not a positive integer", %{conn: conn} do
       for _ <- 1..15 do
         Repo.insert!(%User{})
       end

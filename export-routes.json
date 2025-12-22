@@ -18,7 +18,7 @@
         "base_url": "http://localhost:4000/api",
         "user_id": "1",
         "token_id": "1",
-        "quantity": "10"
+        "limit": "10"
       },
       "parentId": "wrk_token_manager"
     },
@@ -121,7 +121,7 @@
       "_type": "request",
       "name": "Get Users",
       "method": "GET",
-      "url": "{{ _.base_url }}/users/{{ _.quantity }}",
+      "url": "{{ _.base_url }}/users/{{ _.limit }}",
       "headers": [
         {
           "name": "Content-Type",
