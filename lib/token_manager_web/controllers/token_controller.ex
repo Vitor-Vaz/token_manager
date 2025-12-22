@@ -78,7 +78,7 @@ defmodule TokenManagerWeb.TokenController do
         |> put_status(:created)
         |> json(%{})
 
-      :error ->
+      _ ->
         conn
         |> put_status(:internal_server_error)
         |> json(%{error: "internal_server_error"})

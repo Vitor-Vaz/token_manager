@@ -1,0 +1,135 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-12-22T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_token_manager",
+      "_type": "workspace",
+      "name": "Token Manager API",
+      "description": "API para gerenciamento de tokens"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:4000/api",
+        "user_id": "1",
+        "token_id": "1",
+        "quantity": "10"
+      },
+      "parentId": "wrk_token_manager"
+    },
+    {
+      "_id": "req_assign_token",
+      "_type": "request",
+      "name": "Assign Token",
+      "method": "POST",
+      "url": "{{ _.base_url }}/assign_token/{{ _.user_id }}",
+      "body": {},
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "description": "Atribui um token disponível para um usuário",
+      "parentId": "wrk_token_manager"
+    },
+    {
+      "_id": "req_list_tokens",
+      "_type": "request",
+      "name": "List Tokens",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tokens",
+      "parameters": [
+        {
+          "name": "status",
+          "value": "available",
+          "disabled": true
+        },
+        {
+          "name": "user_id",
+          "value": "1",
+          "disabled": true
+        },
+        {
+          "name": "expires_before",
+          "value": "2025-12-31T23:59:59Z",
+          "disabled": true
+        }
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "description": "Lista tokens com filtros opcionais (status, user_id, expires_before)",
+      "parentId": "wrk_token_manager"
+    },
+    {
+      "_id": "req_fetch_token",
+      "_type": "request",
+      "name": "Fetch Token Info",
+      "method": "GET",
+      "url": "{{ _.base_url }}/token/{{ _.token_id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "description": "Busca informações detalhadas de um token específico",
+      "parentId": "wrk_token_manager"
+    },
+    {
+      "_id": "req_token_history",
+      "_type": "request",
+      "name": "Token History",
+      "method": "GET",
+      "url": "{{ _.base_url }}/token_history/{{ _.token_id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "description": "Busca o histórico de auditoria de um token",
+      "parentId": "wrk_token_manager"
+    },
+    {
+      "_id": "req_clear_all_tokens",
+      "_type": "request",
+      "name": "Clear All Tokens",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/clear_all_tokens",
+      "body": {},
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "description": "Limpa todos os tokens (libera tokens atribuídos)",
+      "parentId": "wrk_token_manager"
+    },
+    {
+      "_id": "req_get_users",
+      "_type": "request",
+      "name": "Get Users",
+      "method": "GET",
+      "url": "{{ _.base_url }}/users/{{ _.quantity }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "description": "Retorna uma lista de usuários (quantidade especificada ou 10 por padrão)",
+      "parentId": "wrk_token_manager"
+    }
+  ]
+}
